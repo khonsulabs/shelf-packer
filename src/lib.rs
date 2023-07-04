@@ -2,18 +2,18 @@
 #![allow(clippy::similar_names)]
 use std::fmt::Debug;
 
-pub use figures::{Point, Rect, Size, UPixels};
+pub use figures::{units::UPx, Point, Rect, Size};
 
 #[derive(Debug)]
 pub struct ShelfPacker {
-    size: Size<UPixels>,
+    size: Size<UPx>,
     allocated_width: u32,
     minimum_column_width: u16,
     columns: Vec<Column>,
 }
 
 impl ShelfPacker {
-    pub const fn new(size: Size<UPixels>, minimum_column_width: u16) -> Self {
+    pub const fn new(size: Size<UPx>, minimum_column_width: u16) -> Self {
         Self {
             size,
             allocated_width: 0,
@@ -22,7 +22,7 @@ impl ShelfPacker {
         }
     }
 
-    pub fn allocate(&mut self, area: Size<UPixels>) -> Option<Allocation> {
+    pub fn allocate(&mut self, area: Size<UPx>) -> Option<Allocation> {
         self.allocate_area(Size {
             width: area.width.0.try_into().expect("area allocated too large"),
             height: area.height.0.try_into().expect("area allocated too large"),
@@ -78,7 +78,7 @@ impl ShelfPacker {
         None
     }
 
-    fn allocation_origin(&self, allocation: AllocationId) -> Point<UPixels> {
+    fn allocation_origin(&self, allocation: AllocationId) -> Point<UPx> {
         let col = &self.columns[usize::from(allocation.column)];
         let shelf = &col.shelves[usize::from(allocation.shelf)];
         Point::new(col.x + u32::from(allocation.offset), shelf.y)
@@ -141,7 +141,7 @@ impl ShelfPacker {
         }
     }
 
-    pub fn allocated(&self) -> UPixels {
+    pub fn allocated(&self) -> UPx {
         let mut allocated = 0;
 
         for col in &self.columns {
@@ -161,7 +161,7 @@ impl ShelfPacker {
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub struct Allocation {
     pub id: AllocationId,
-    pub rect: Rect<UPixels>,
+    pub rect: Rect<UPx>,
 }
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug)]
