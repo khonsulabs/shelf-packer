@@ -81,7 +81,7 @@ impl ShelfPacker {
     fn allocation_origin(&self, allocation: AllocationId) -> Point<UPx> {
         let col = &self.columns[usize::from(allocation.column)];
         let shelf = &col.shelves[usize::from(allocation.shelf)];
-        Point::new(col.x + u32::from(allocation.offset), shelf.y)
+        Point::new(col.x + u32::from(allocation.offset), shelf.y).cast()
     }
 
     pub fn free(&mut self, id: AllocationId) {
